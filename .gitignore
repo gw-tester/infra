@@ -1,0 +1,7 @@
+.vagrant/
+*.swp
+.tox/
+
+# DANM
+cni-multiplexer/danm/kustomization.yml
+cni-multiplexer/danm/install/deployments.yml
