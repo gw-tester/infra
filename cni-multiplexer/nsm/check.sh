@@ -15,7 +15,6 @@ set -o nounset
 source _assertions.sh
 
 info "Validating NSM helm charts"
-assert_helm_repo_exists nsm
 assert_helm_chart_installed nsm
 
 info "Validating NSM admission webhook"

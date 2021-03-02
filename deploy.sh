@@ -34,6 +34,7 @@ fi
 for node in $(kubectl get node -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}'); do
     kubectl wait --for=condition=ready "node/$node" --timeout=3m
 done
+kubectl taint node k8s-control-plane node-role.kubernetes.io/master:NoSchedule-
 
 # NOTE: DANM does not support chaining together multiple CNI plugin
 if [ "${MULTI_CNI}" == "danm" ]; then

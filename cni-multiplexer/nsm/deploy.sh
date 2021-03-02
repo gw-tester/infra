@@ -15,24 +15,15 @@ if [[ "${DEBUG:-false}" == "true" ]]; then
     set -o xtrace
 fi
 
-# Load NSM images to local regitstry
-for image in admission-webhook vppagent-forwarder nsmdp nsmd nsmd-k8s; do
-    newgrp docker <<EONG
-    docker pull networkservicemesh/$image:v0.2.0
-    kind load docker-image networkservicemesh/$image:v0.2.0 --name k8s
-EONG
-done
-
-# Add helm chart release repositories
-if ! helm repo list | grep -e nsm; then
-    helm repo add nsm https://helm.nsm.dev/
-    helm repo update
+if [ ! -d /opt/nsm ]; then
+    sudo git clone --depth 1 https://github.com/networkservicemesh/networkservicemesh /opt/nsm
+    sudo chown -R "$USER:" /opt/nsm
 fi
 
-# Install the nsm chart
-if ! helm ls | grep -e nsm; then
-    helm install nsm nsm/nsm --set insecure=true
-fi
+# Deploy NSM services
+pushd /opt/nsm
+NSM_NAMESPACE=default SPIRE_ENABLED=false INSECURE=true sudo -E make helm-install-nsm
+popd
 
 # Wait for NSM services
 for daemonset in $(kubectl get daemonset | grep nsm | awk '{print $1}'); do
@@ -42,13 +33,6 @@ for daemonset in $(kubectl get daemonset | grep nsm | awk '{print $1}'); do
         exit 1
     fi
 done
-
-# TODO: Create a new repository for NSE container image
-
-newgrp docker <<EONG
-docker pull networkservicemesh/nsm-init:v0.2.0
-kind load docker-image networkservicemesh/nsm-init:v0.2.0 --name k8s
-EONG
 
 # Create NetworkService resources
 kubectl apply -f overlay.yml

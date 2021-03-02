@@ -35,4 +35,4 @@ function install_deps {
 trap print_stats ERR
 
 info "Running installation process..."
-install_deps kubectl jq helm kind docker cni-plugins
+install_deps kubectl jq helm kind docker cni-plugins make
