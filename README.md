@@ -3,9 +3,9 @@
 
 ## Summary
 
-This project provides the infrastructure services (Kubernetes Cluster
-+ CNI Multiplexer) required by the GW Tester CNF. The following
-CNI Multiplexers are supported:
+This project provides the infrastructure services (Kubernetes
+Cluster + CNI Multiplexer) required by the GW Tester CNF. The
+following CNI Multiplexers are supported:
 
 * [Multus][1]
 * [DANM][2]
