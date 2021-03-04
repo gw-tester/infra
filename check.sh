@@ -19,6 +19,9 @@ assert_non_empty "$(kubectl get nodes --no-headers)"
 for node in $(kubectl get node -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}'); do
     kubectl wait --for=condition=ready "node/$node" --timeout=3m
 done
+info "Validating that MutatingAdmissionController is enabled"
+assert_non_empty "$(kubectl api-versions | grep admissionregistration.k8s.io)"
+assert_contains "$(kubectl api-versions)" "admissionregistration.k8s.io/v1"
 
 if [ "${MULTI_CNI}" != "nsm" ]; then
     ./overlay/check.sh
