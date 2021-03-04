@@ -29,3 +29,8 @@ nodes:
     extraMounts:
       - hostPath: /opt/containernetworking/plugins
         containerPath: /opt/cni/bin
+  - role: worker
+    image: kindest/node:v1.18.2
+    extraMounts:
+      - hostPath: /opt/containernetworking/plugins
+        containerPath: /opt/cni/bin

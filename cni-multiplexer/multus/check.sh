@@ -52,6 +52,13 @@ metadata:
         ${annotations::-1}
       ]
 spec:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: node-role.kubernetes.io/master
+                operator: DoesNotExist
   containers:
     - name: instance
       image: busybox:stable
