@@ -76,27 +76,12 @@ metadata:
       }
 spec:
   containers:
-    - name: sidecar
-      image: gwtester/nse:0.0.1
-      resources:
-        limits:
-          networkservicemesh.io/socket: 1
-      volumeMounts:
-        - name: nsm-endpoints
-          mountPath: /etc/nsminfo
     - image: busybox:stable
       name: instance
       command:
         - sleep
       args:
         - infinity
-  volumes:
-    - name: nsm-endpoints
-      downwardAPI:
-        items:
-          - path: endpoints
-            fieldRef:
-              fieldPath: metadata.annotations['ns.networkservicemesh.io/endpoints']
 EOF
 trap "kubectl delete pod endpoint --ignore-not-found" EXIT
 kubectl wait --for=condition=ready pods endpoint --timeout=3m
