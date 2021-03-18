@@ -15,12 +15,6 @@ if [[ "${DEBUG:-false}" == "true" ]]; then
     set -o xtrace
 fi
 
-# Load the ETCD image to local regitstry
-newgrp docker <<EONG
-docker pull quay.io/coreos/etcd:v3.3.20
-kind load docker-image quay.io/coreos/etcd:v3.3.20 --name k8s
-EONG
-
 # Get an IP Cluster
 kubectl apply -f etcd.yml
 

@@ -51,10 +51,6 @@ assert_daemonset_exists nsm-vpp-forwarder default
 assert_daemonset_readiness nsm-vpp-forwarder default
 
 info "Validating Multiple networks"
-newgrp docker <<EONG
-docker pull busybox:stable
-kind load docker-image busybox:stable --name k8s
-EONG
 
 info "Creating NSM endpoint"
 annotations=" "

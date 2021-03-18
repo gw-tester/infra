@@ -24,22 +24,18 @@ fi
 
 pushd /opt/danm
 if [ "$(sudo docker images | grep -c "$danm_version")" != "5" ]; then
-    newgrp docker <<EONG
-    ./build_danm.sh
-    docker image prune --force
+    sudo ./build_danm.sh
+    sudo docker image prune --force
     for img in danm-cni-plugins webhook svcwatcher netwatcher damn-installer; do
-        docker tag "\$img:latest" "\$img:$danm_version"
+        sudo docker tag "$img:latest" "$img:$danm_version"
     done
-EONG
 fi
 echo "Create Webhook certificate"
 ./integration/manifests/webhook/webhook-create-signed-cert.sh
 popd
 
 for img in danm-cni-plugins webhook svcwatcher netwatcher damn-installer; do
-    newgrp docker <<EONG
-    kind load docker-image "$img:$danm_version" --name k8s
-EONG
+    sudo kind load docker-image "$img:$danm_version" --name k8s
 done
 
 cp ~/.kube/config /tmp/kubeconfig

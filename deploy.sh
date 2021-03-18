@@ -24,12 +24,8 @@ info "Running deployment process..."
 
 # Deploy Kubernetes Cluster
 if ! sudo "$(command -v kind)" get clusters | grep -e k8s; then
-    newgrp docker <<EONG
-    docker pull kindest/node:v1.18.2
-    kind create cluster --name k8s --config=./kind-config.yml --wait=300s
-    docker pull quay.io/coreos/flannel:v0.12.0-amd64
-    kind load docker-image quay.io/coreos/flannel:v0.12.0-amd64 --name k8s
-EONG
+    sudo kind create cluster --name k8s --config=./kind-config.yml --wait=300s
+    sudo chown -R "$USER" "$HOME/.kube/"
 fi
 for node in $(kubectl get node -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}'); do
     kubectl wait --for=condition=ready "node/$node" --timeout=3m
@@ -38,14 +34,12 @@ kubectl taint node k8s-control-plane node-role.kubernetes.io/master:NoSchedule-
 
 # NOTE: DANM does not support chaining together multiple CNI plugin
 if [ "${MULTI_CNI}" == "danm" ]; then
-    newgrp docker << "EONG"
-    for container in $(docker ps -q --filter ancestor=kindest/node:v1.18.2); do
-    docker cp $container:/etc/cni/net.d/10-kindnet.conflist /tmp/10-kindnet.conflist
-    jq '. | { name: .name, cniVersion: .cniVersion, type: .plugins[0].type, ipMasq: .plugins[0].ipMasq, ipam: .plugins[0].ipam }' /tmp/10-kindnet.conflist > /tmp/kindnet.conf
-    docker cp /tmp/kindnet.conf $container:/etc/cni/net.d/kindnet.conf
-    docker exec $container rm /etc/cni/net.d/10-kindnet.conflist
+    for container in $(sudo docker ps -q --filter ancestor=kindest/node:v1.18.2); do
+        sudo docker cp "$container:/etc/cni/net.d/10-kindnet.conflist" /tmp/10-kindnet.conflist
+        jq '. | { name: .name, cniVersion: .cniVersion, type: .plugins[0].type, ipMasq: .plugins[0].ipMasq, ipam: .plugins[0].ipam }' /tmp/10-kindnet.conflist > /tmp/kindnet.conf
+        sudo docker cp /tmp/kindnet.conf "$container:/etc/cni/net.d/kindnet.conf"
+        sudo docker exec "$container" rm /etc/cni/net.d/10-kindnet.conflist
     done
-EONG
 fi
 
 # Wait for CoreDNS service

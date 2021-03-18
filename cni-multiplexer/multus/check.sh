@@ -32,10 +32,6 @@ info "Validating Network Attachment definitions"
 assert_equals "$(kubectl get net-attach-def --no-headers | grep -c "lte-")" "7"
 
 info "Validating Multiple networks"
-newgrp docker <<EONG
-docker pull busybox:stable
-kind load docker-image busybox:stable --name k8s
-EONG
 annotations=" "
 for net in "${!networks[@]}"; do
     annotations+="{\"name\": \"lte-$net\", \"interface\": \"${net}0\"},"

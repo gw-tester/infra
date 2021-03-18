@@ -34,10 +34,6 @@ assert_deployment_readiness danm-webhook-deployment
 assert_service_exists danm-webhook-svc
 
 info "Validating Multiple networks"
-newgrp docker <<EONG
-docker pull busybox:stable
-kind load docker-image busybox:stable --name k8s
-EONG
 annotations="{\"clusterNetwork\":\"default\"},"
 for net in "${!networks[@]}"; do
     annotations+="{\"clusterNetwork\":\"lte-$net\"},"
