@@ -24,6 +24,10 @@ info "Running deployment process..."
 
 # Deploy Kubernetes Cluster
 if ! sudo "$(command -v kind)" get clusters | grep -e k8s; then
+    if [ ! -d /opt/containernetworking/plugins ] || [ -z "$(ls -A /opt/containernetworking/plugins)" ]; then
+        # NOTE: Shorten link -> https://github.com/electrocucaracha/pkg-mgr_scripts
+        curl -fsSL http://bit.ly/install_pkg | PKG=cni-plugins bash
+    fi
     sudo kind create cluster --name k8s --config=./kind-config.yml --wait=300s
     sudo chown -R "$USER" "$HOME/.kube/"
 fi

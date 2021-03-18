@@ -1,10 +1,9 @@
 FROM ubuntu:bionic
 
-ENV PKG "kubectl jq helm kind cni-plugins make docker-ce-cli"
+ENV PKG "kubectl jq helm kind make docker-ce-cli"
 ENV PKG_UPDATE "true"
 ENV PKG_KUBECTL_VERSION "v1.20.4"
 ENV PKG_KIND_VERSION "0.10.0"
-ENV PKG_CNI_PLUGINS_VERSION "0.9.1"
 ENV USER "docker"
 
 ENV DEBIAN_FRONTEND=noninteractive
