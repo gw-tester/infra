@@ -26,8 +26,12 @@ function exit_trap {
     print_stats
     echo "Environment variables:"
     echo "MULTI_CNI: $MULTI_CNI"
+    echo "Docker statistics:"
+    sudo docker stats --no-stream
     echo "Kubernetes Resources:"
     kubectl get all -A -o wide
+    echo "Kubernetes Nodes information:"
+    kubectl describe nodes
 }
 
 function info {
