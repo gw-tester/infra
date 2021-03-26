@@ -1,0 +1,3 @@
+{
+  "ignore": ["**/cni-multiplexer/danm/install/crds.yml"]
+}
