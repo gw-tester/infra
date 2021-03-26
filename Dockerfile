@@ -1,6 +1,6 @@
 FROM ubuntu:bionic
 
-ENV PKG "kubectl jq helm kind make docker-ce-cli"
+ENV PKG "kubectl jq helm kind make docker-ce-cli gomplate"
 ENV PKG_UPDATE "true"
 ENV PKG_KUBECTL_VERSION "v1.20.4"
 ENV PKG_KIND_VERSION "0.10.0"

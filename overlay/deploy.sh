@@ -28,4 +28,4 @@ done
 
 # Create Flannel separate services for every network
 kubectl apply -f configmaps_flannel.yml
-kubectl apply -f ./lte-networks/
+gomplate --datasource config=networks.yml --file base.yml.tmpl | kubectl apply -f -
