@@ -14,16 +14,6 @@ set -o nounset
 
 source _assertions.sh
 
-declare -A networks=(
-["euu"]="10.0.3.0/24"
-["sgi"]="10.0.1.0/24"
-["s1u"]="172.21.0.0/24"
-["s1c"]="172.21.1.0/24"
-["s11"]="172.22.0.0/24"
-["s5u"]="172.25.0.0/24"
-["s5c"]="172.25.1.0/24"
-)
-
 declare -A apps=(
 ["euu"]="enb-euu"
 ["sgi"]="http-server-sgi"
