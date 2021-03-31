@@ -1,6 +1,7 @@
 .vagrant/
 *.swp
 .tox/
+*.log
 
 # DANM
 cni-multiplexer/danm/kustomization.yml

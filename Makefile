@@ -17,3 +17,10 @@ build:
 push: build
 	docker-squash $(IMAGE_NAME)
 	sudo -E $(DOCKER_CMD) push $(IMAGE_NAME)
+
+.PHONY: lint
+lint:
+	sudo -E $(DOCKER_CMD) run -e RUN_LOCAL=true --rm \
+	-e LINTER_RULES_PATH=/ \
+	-e VALIDATE_KUBERNETES_KUBEVAL=false \
+	-v $$(pwd):/tmp/lint github/super-linter
