@@ -8,7 +8,8 @@
 ##############################################################################
 
 DOCKER_CMD ?= $(shell which docker 2> /dev/null || which podman 2> /dev/null || echo docker)
-IMAGE_NAME=gwtester/infra:0.0.1
+IMAGE_VERSION ?= $(shell git describe --abbrev=0 --tags)
+IMAGE_NAME=gwtester/infra:$(IMAGE_VERSION)
 
 .PHONY: build
 build:

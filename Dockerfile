@@ -10,7 +10,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-  curl=7.58.0-2ubuntu3.12 \
+  curl=7.58.0-2ubuntu3.13 \
   ca-certificates=20210119~18.04.1 \
   gnupg2=2.2.4-1ubuntu1.4 \
   sudo=1.8.21p2-3ubuntu1.4 && \
