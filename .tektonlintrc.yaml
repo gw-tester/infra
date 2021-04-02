@@ -8,5 +8,5 @@
 # http://www.apache.org/licenses/LICENSE-2.0
 ##############################################################################
 
-rules: # error | warning | off
+rules:
   no-missing-resource: warning

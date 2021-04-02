@@ -25,3 +25,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           LINTER_RULES_PATH: /
           VALIDATE_KUBERNETES_KUBEVAL: false
+      - name: Install tox
+        run: pip install tox
+      - name: Run tox validation
+        run: tox -e lint
