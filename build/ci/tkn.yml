@@ -23,6 +23,35 @@ spec:
 apiVersion: tekton.dev/v1beta1
 kind: Task
 metadata:
+  name: infra-linter-task
+spec:
+  params:
+    - name: validate-kubernetes-kubeval
+      description: Flag to enable or disable the linting process of Kubernetes descriptors with Kubeval
+      default: "true"
+      type: string
+  resources:
+    inputs:
+      - name: repo
+        type: git
+        targetPath: src
+  steps:
+    - name: linter
+      image: github/super-linter:v3
+      workingDir: /workspace/src
+      env:
+        - name: DEFAULT_WORKSPACE
+          value: /workspace/src
+        - name: RUN_LOCAL
+          value: "true"
+        - name: LINTER_RULES_PATH
+          value: /
+        - name: VALIDATE_KUBERNETES_KUBEVAL
+          value: "$(params.validate-kubernetes-kubeval)"
+---
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
   name: infra-system-test
 spec:
   params:
@@ -57,6 +86,10 @@ spec:
   sidecars:
     - image: docker:18.05-dind
       name: server
+      resources:
+        requests:
+          cpu: "2"
+          memory: "8Gi"
       securityContext:
         privileged: true
       volumeMounts:
@@ -83,36 +116,16 @@ spec:
     - name: src
       type: git
   tasks:
-    - name: tox-linting
+    - name: linting
       taskRef:
-        name: linter-task
-      params:
-        - name: linter_tool
-          value: tox
+        name: infra-linter-task
       resources:
         inputs:
           - name: repo
             resource: src
-    - name: shellcheck-linting
-      taskRef:
-        name: linter-task
       params:
-        - name: linter_tool
-          value: shellcheck
-      resources:
-        inputs:
-          - name: repo
-            resource: src
-    - name: hadolint-linting
-      taskRef:
-        name: linter-task
-      params:
-        - name: linter_tool
-          value: hadolint
-      resources:
-        inputs:
-          - name: repo
-            resource: src
+        - name: validate-kubernetes-kubeval
+          value: "false"
     - name: check-multus
       taskRef:
         name: infra-system-test
@@ -125,9 +138,7 @@ spec:
           - name: repo
             resource: src
       runAfter:
-        - tox-linting
-        - shellcheck-linting
-        - hadolint-linting
+        - linting
     - name: check-danm
       taskRef:
         name: infra-system-test
@@ -140,9 +151,7 @@ spec:
           - name: repo
             resource: src
       runAfter:
-        - tox-linting
-        - shellcheck-linting
-        - hadolint-linting
+        - linting
     - name: check-nsm
       taskRef:
         name: infra-system-test
@@ -154,6 +163,4 @@ spec:
           - name: repo
             resource: src
       runAfter:
-        - tox-linting
-        - shellcheck-linting
-        - hadolint-linting
+        - linting
