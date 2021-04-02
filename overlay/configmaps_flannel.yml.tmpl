@@ -1,0 +1,29 @@
+{{ range (ds "config").networks -}}
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: lte-{{ .name }}-flannel-cfg
+  namespace: kube-system
+data:
+  {{ .name }}.conf: |
+    {
+      "name": "lte-{{ .name }}",
+      "cniVersion": "0.3.1",
+      "type": "flannel",
+      "subnetFile": "/run/flannel/lte-{{ .name }}.env",
+      "dataDir": "/var/lib/cni/flannel_{{ .name }}",
+      "delegate": {
+        "bridge": "{{ .bridge }}"
+      }
+    }
+  net-conf.json: |
+    {
+      "Network": "{{ .cidr }}",
+      "Backend": {
+        "Type": "vxlan",
+        "VNI": {{ .vni }},
+        "DirectRouting": true
+      }
+{{ end }}
+    }

@@ -27,5 +27,6 @@ until kubectl logs "$flannel_etdc_pod" -n kube-system | grep "ready to serve cli
 done
 
 # Create Flannel separate services for every network
-kubectl apply -f configmaps_flannel.yml
-gomplate --datasource config=networks.yml --file base.yml.tmpl | kubectl apply -f -
+for template in configmaps_flannel base; do
+    gomplate --datasource config=networks.yml --file "$template.yml.tmpl" | kubectl apply -f -
+done

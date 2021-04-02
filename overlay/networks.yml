@@ -12,21 +12,28 @@ networks:
   - name: euu
     vni: 2
     cidr: 10.0.3.0/24
+    bridge: kbr1
   - name: sgi
     vni: 3
     cidr: 10.0.1.0/24
+    bridge: kbr2
   - name: s1u
     vni: 4
     cidr: 172.21.0.0/24
+    bridge: kbr3
   - name: s1c
     vni: 5
     cidr: 172.21.1.0/24
+    bridge: kbr4
   - name: s11
     vni: 6
     cidr: 172.22.0.0/24
+    bridge: kbr5
   - name: s5u
     vni: 7
     cidr: 172.25.0.0/24
+    bridge: kbr6
   - name: s5c
     vni: 8
     cidr: 172.25.1.0/24
+    bridge: kbr7
