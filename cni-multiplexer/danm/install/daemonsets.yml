@@ -24,7 +24,7 @@ spec:
     spec:
       containers:
         - name: danm-cni
-          image: danm-cni-plugins
+          image: danmcni/danm-cni-plugins:4.2.1
           volumeMounts:
             - name: cni
               mountPath: /host/cni
@@ -59,7 +59,7 @@ spec:
       hostPID: true
       containers:
         - name: netwatcher
-          image: netwatcher
+          image: danmcni/netwatcher:4.2.1
           securityContext:
             capabilities:
               add:
@@ -95,7 +95,7 @@ spec:
         "node-role.kubernetes.io/master": ""
       containers:
         - name: svcwatcher
-          image: svcwatcher
+          image: danmcni/svcwatcher:4.2.1
           imagePullPolicy: IfNotPresent
           args:
             - "--logtostderr"

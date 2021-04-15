@@ -101,7 +101,7 @@ spec:
       serviceAccountName: danm-webhook
       containers:
         - name: danm-webhook
-          image: webhook
+          image: danmcni/webhook:4.2.1
           command: ["/usr/local/bin/webhook", "-tls-cert-bundle=/etc/webhook/certs/cert.pem", "-tls-private-key-file=/etc/webhook/certs/key.pem", "bind-port=8443"]
           imagePullPolicy: IfNotPresent
           volumeMounts:

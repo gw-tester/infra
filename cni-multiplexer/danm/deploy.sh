@@ -15,28 +15,14 @@ if [[ "${DEBUG:-false}" == "true" ]]; then
     set -o xtrace
 fi
 
-danm_version="v4.2.0"
+danm_version="v4.2.1"
 
-if [ ! -d /opt/danm ]; then
-    sudo git clone --depth 1 https://github.com/nokia/danm -b "$danm_version" /opt/danm
-    sudo chown -R "$USER" /opt/danm
-fi
-
-pushd /opt/danm
-if [ "$(sudo docker images | grep -c "$danm_version")" != "5" ]; then
-    sudo ./build_danm.sh
-    sudo docker image prune --force
-    for img in danm-cni-plugins webhook svcwatcher netwatcher damn-installer; do
-        sudo docker tag "$img:latest" "$img:$danm_version"
-    done
-fi
+pushd /tmp
 echo "Create Webhook certificate"
-./integration/manifests/webhook/webhook-create-signed-cert.sh
+curl -sL -o webhook-create-signed-cert.sh "https://raw.githubusercontent.com/nokia/danm/$danm_version/integration/manifests/webhook/webhook-create-signed-cert.sh"
+chmod +x webhook-create-signed-cert.sh
+./webhook-create-signed-cert.sh
 popd
-
-for img in danm-cni-plugins webhook svcwatcher netwatcher damn-installer; do
-    sudo kind load docker-image "$img:$danm_version" --name k8s
-done
 
 cp ~/.kube/config /tmp/kubeconfig
 sed -i "s|server: .*|server: https://$(kubectl get all -o jsonpath='{.items[0].spec.clusterIP}'):443|g" /tmp/kubeconfig
@@ -63,14 +49,14 @@ cat <<EOF >./kustomization.yml
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 images:
-  - name: danm-cni-plugins
-    newTag: $danm_version
-  - name: webhook
-    newTag: $danm_version
-  - name: svcwatcher
-    newTag: $danm_version
-  - name: netwatcher
-    newTag: $danm_version
+  - name: danmcni/danm-cni-plugins
+    newTag: ${danm_version#v}
+  - name: danmcni/webhook
+    newTag: ${danm_version#v}
+  - name: danmcni/svcwatcher
+    newTag: ${danm_version#v}
+  - name: danmcni/netwatcher
+    newTag: ${danm_version#v}
 resources:
   - install/daemonsets.yml
   - install/deployments.yml
